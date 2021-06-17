@@ -4,10 +4,15 @@ import '../css/post.css';
 import {
   Link,Redirect,
 } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux'
+import { decrement, increment } from '../redux/likes-counter'
 
 export default  function Post(){
 
     const [posts, getPosts] = useState('');
+    const id = useSelector((state) => state.counter.id)
+    const likes = useSelector((state) => state.counter.likes)
+    const dispatch = useDispatch()
 
     useEffect ( ()=> {
         getAllPosts();
@@ -43,6 +48,15 @@ export default  function Post(){
       .catch(err => console.log("Couldn't fetch data. Error: " + err));
     }
 
+
+    const likePost = (id,likes,event) => {
+      
+
+      console.log(id,likes);
+      dispatch(increment({id:id,likes:likes}));
+    }
+
+
     
     return (
       
@@ -58,6 +72,8 @@ export default  function Post(){
                  <article key={index}>
                    <h2>{index + 1}. {post.title}</h2>
                    <p>{post.body.substr(0, 100)}...</p>
+                  
+             <button id={post.id} onClick={(event) => likePost(post.id,post.likes_count,event)} key={post.id}>Like {post.id == id ?likes  : post.likes_count }</button>
                    <button id={post.id} onClick={(event) => handleClick(event)}>Delete</button>
                    
                    <Link
