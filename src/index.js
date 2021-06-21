@@ -5,7 +5,12 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import store from './redux/store'
 import { Provider } from 'react-redux'
+import axios from 'axios';
 
+const token = localStorage.getItem('token');
+if(token){
+axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+}
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>

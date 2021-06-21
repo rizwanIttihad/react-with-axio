@@ -5,7 +5,8 @@ import {
   Link,Redirect,
 } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
-import { decrement, increment } from '../redux/likes-counter'
+import { increment,decrement } from '../redux/likes-counter'
+import json5 from 'json5';
 
 export default  function Post(){
 
@@ -13,6 +14,7 @@ export default  function Post(){
     const id = useSelector((state) => state.counter.id)
     const likes = useSelector((state) => state.counter.likes)
     const dispatch = useDispatch()
+    const userId = localStorage.getItem('user_id');
 
     useEffect ( ()=> {
         getAllPosts();
@@ -27,7 +29,14 @@ export default  function Post(){
       getPosts(newData)
       console.log(newData);
     })
-    .catch(err => console.log("Couldn't fetch data. Error: " + err));
+    .catch(err => {
+    //   switch (err.response.status) {
+    //     case 401:
+    //       window.location = '/login';
+    //     default:
+    //         break
+    //  }
+    });
     console.log(posts);
     
     }
@@ -45,18 +54,26 @@ export default  function Post(){
           window.location = '/list';
         }
       })
-      .catch(err => console.log("Couldn't fetch data. Error: " + err));
+      .catch(err => {
+      //   switch (err.response.status) {
+      //     case 401:
+      //       window.location = '/login';
+      //     default:
+      //         break
+      //  }
+      });
     }
 
 
     const likePost = (id,likes,event) => {
-      
-
       console.log(id,likes);
       dispatch(increment({id:id,likes:likes}));
     }
 
-
+    const unlikePost = (id,likes,event) => {
+      console.log(id,likes);
+      dispatch(decrement({id:id,likes:likes}));
+    }
     
     return (
       
@@ -69,11 +86,53 @@ export default  function Post(){
                <p>Loading Posts...</p>
              :
              posts.map((post, index) => (
+
+              
                  <article key={index}>
-                   <h2>{index + 1}. {post.title}</h2>
+                 
+                  <h2>{index + 1}. {post.title} From <small>{post.user.name}</small></h2>
                    <p>{post.body.substr(0, 100)}...</p>
+
+                   {
+                     
+                      post.post_like_by.length > 0 ?
+                     post.post_like_by.map((postLikeBy, index) => (
+                       
+                    postLikeBy.user_id == userId ?
+
+                     (
+                      
+                     <button id={post.id} 
+
+                      onClick={(event) => unlikePost(post.id,post.likes_count,event)} 
+                      key={post.id}>
+                      UnLike {post.id == id ?likes  : post.likes_count } 
+                      
+                     </button>
+                     
+                     )
+                      
+                     :
+                    
+                    (
+                    <button id={post.id}
+
+                    onClick={(event) => likePost(post.id,post.likes_count,event)} 
+                    key={post.id}>Like {post.id == id ?likes  : post.likes_count } 
+                    {console.log(postLikeBy)}
+
+                    </button>
+                    
+                    )))
+                     
+                     
+                    :
+                    (
+                    <button id={post.id} onClick={(event) => likePost(post.id,post.likes_count,event)} key={post.id}>Like {post.id == id ?likes  : post.likes_count } </button>
+                    )
+                   }
                   
-             <button id={post.id} onClick={(event) => likePost(post.id,post.likes_count,event)} key={post.id}>Like {post.id == id ?likes  : post.likes_count }</button>
+                    
                    <button id={post.id} onClick={(event) => handleClick(event)}>Delete</button>
                    
                    <Link

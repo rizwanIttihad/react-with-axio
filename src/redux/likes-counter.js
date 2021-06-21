@@ -13,26 +13,25 @@ export const counterSlice = createSlice({
         //action.payload.likes += 1;
         state.id = action.payload.id;
         state.likes = action.payload.likes += 1;
-
+        
         axios.post('http://127.0.0.1:8000/api/like/post',{
             id: state.id,
             likes_count: state.likes
         }).then(res => {
             console.log(res);
-            
-
-            // if(res.status === 200){
-            //     console.log(res);
-            //     //   return window.location = '/list';
-                 
-            // }
-                
-            
         });
-    }
-    // decrement: (state) => {
-    //   state.count -= 1
-    // },
+    },
+    decrement: (state,action) => {
+        state.id = action.payload.id;
+        state.likes = action.payload.likes -= 1;
+
+        axios.post('http://127.0.0.1:8000/api/unlike/post',{
+            id: state.id,
+            likes_count: state.likes
+        }).then(res => {
+            console.log(res);
+        });
+    },
     // incrementByAmount: (state, action) => {
     //   state.count += action.payload
     // },

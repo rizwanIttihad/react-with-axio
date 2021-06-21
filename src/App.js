@@ -4,6 +4,8 @@ import axios from 'axios';
 import Post from './components/Post'
 import CreatePost from './components/CreatePost'
 import EditPost from './components/EditPost'
+import Login from './components/login'
+import LogOut from './components/logout'
 import {
   BrowserRouter as Router,
   Route,Link,
@@ -25,6 +27,12 @@ function App() {
             <li>
               <Link to="/create">Create Post</Link>
             </li>
+            <li>
+              <Link to="/login">Log in</Link>
+            </li>
+            <li>
+              <Link to="/logout">Log out</Link>
+            </li>
           </ul>
         </header>
 
@@ -39,7 +47,11 @@ function App() {
           <Route path="/create">
             <CreatePost />
           </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
           <Route exact path='/editpost' component={EditPost} />
+          <Route exact path='/logout' component={LogOut} />
         </Switch>
       </div>
     </Router>
