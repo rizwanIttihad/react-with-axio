@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import axios from 'axios';
+import React, { setState } from 'react';
 
 export const counterSlice = createSlice({
   name: 'counter',
@@ -11,6 +12,7 @@ export const counterSlice = createSlice({
     increment: (state,action) => {
         console.log(action.payload.id,action.payload.likes);
         //action.payload.likes += 1;
+    
         state.id = action.payload.id;
         state.likes = action.payload.likes += 1;
         
@@ -22,6 +24,8 @@ export const counterSlice = createSlice({
         });
     },
     decrement: (state,action) => {
+
+       
         state.id = action.payload.id;
         state.likes = action.payload.likes -= 1;
 
