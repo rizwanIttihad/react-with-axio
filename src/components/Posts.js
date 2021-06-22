@@ -5,21 +5,19 @@ import {
   Link,Redirect,
 } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
-import { increment,decrement } from '../redux/likes-counter'
+import { updateStatus } from '../redux/like-unlike'
 import LikeUnlike from './LikeUnlike'
 
-export default  function Post(){
+export default function Posts(){
+
 
     const [posts, setPosts] = useState('');
     //const posts = useSelector((state) => state.counter.posts)
-    const id = useSelector((state) => state.counter.id)
-    const likes = useSelector((state) => state.counter.likes)
+    const id = useSelector((state) => state.likeUnlike.id)
+    const likes = useSelector((state) => state.likeUnlike.likes)
+    const likeStatus = useSelector((state) => state.likeUnlike.likeStatus)
     const dispatch = useDispatch()
     const userId = localStorage.getItem('user_id');
-
-
-   
-
 
     useEffect ( ()=> {
         getAllPosts();
@@ -41,61 +39,74 @@ export default  function Post(){
     }
 
 
-
     function handleClick(event){
       
-      console.log(event.target.id);
-      axios.post('http://127.0.0.1:8000/api/delete/post',{
-        id: event.target.id,
-      })
-      .then(res => {
-        if(res.status === 200){
-          window.location = '/list';
-        }
-      })
-      .catch(err => {
-        console.log(err)
-      });
-    }
-
-
-    
-    const likePost = (id,likes,event) => {
-      let index = posts.findIndex(x => x.id === id); 
-      if (index !== -1){
-        let temporaryarray = posts.slice();
-        temporaryarray[index]['likes_count'] = likes + 1;
-        console.log('temp',temporaryarray);
-        setPosts(temporaryarray);
+        console.log(event.target.id);
+        axios.post('http://127.0.0.1:8000/api/delete/post',{
+          id: event.target.id,
+        })
+        .then(res => {
+          if(res.status === 200){
+            window.location = '/list';
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        });
       }
-      else {
-          console.log('no match');
-      }
-      dispatch(increment({id:id,likes:likes}));
+  
+  
       
-    }
-    
-
-    
-
-    // const checkUserId = (postLikeBy,post) => {
-    //   if(postLikeBy.user_id == userId){
-    //     return (
-    //     <button id={post.id} 
-
-    //     onClick={(event) => unlikePost(post.id,post.likes_count,event)} 
-    //     key={post.id}>
-    //     UnLike {post.id == id ?likes  : post.likes_count } 
+    //   const likePost = (id,likes,event) => {
+    //     let index = posts.findIndex(x => x.id === id); 
+    //     if (index !== -1){
+    //       let temporaryarray = posts.slice();
+    //       temporaryarray[index]['likes_count'] = likes + 1;
+    //       console.log('temp',temporaryarray);
+    //       setPosts(temporaryarray);
+    //     }
+    //     else {
+    //         console.log('no match');
+    //     }
+    //     dispatch(increment({id:id,likes:likes}));
         
-    //     </button>
-    //     );
-    //   }else{
-    //     return false;
     //   }
-    // }
 
-    
-    return (
+      const updateLikeStatus = (id,likes,likeStatus,event) => {
+        //console.log(likeStatus);
+        
+        if(likeStatus === 'Like'){
+            
+            let index = posts.findIndex(x => x.id === id); 
+            if (index !== -1){
+            let temporaryarray = posts.slice();
+            temporaryarray[index]['likes_count'] = likes + 1;
+            console.log('temp',temporaryarray);
+            setPosts(temporaryarray);
+            }
+            else {
+                console.log('no match');
+            }
+        }else{
+            
+            let index = posts.findIndex(x => x.id === id); 
+            if (index !== -1){
+            let temporaryarray = posts.slice();
+            temporaryarray[index]['likes_count'] = likes - 1;
+            console.log('temp',temporaryarray);
+            setPosts(temporaryarray);
+            }
+            else {
+                console.log('no match');
+            }
+        }
+        dispatch(updateStatus({id:id,likes:likes,likeStatus:likeStatus}));
+        
+      }
+
+
+
+      return (
       
         <div className='ArticleContainer'>
           
@@ -126,7 +137,7 @@ export default  function Post(){
                     })
                     :
                     (
-                    <button id={post.id} onClick={(event) => likePost(post.id,post.likes_count,event)} key={post.id}>Like {post.id == id ?likes  : post.likes_count } </button>
+                    <button id={post.id} onClick={(event) => updateLikeStatus(post.id,post.likes_count,post.id == id ? likeStatus : 'Like',event)} key={post.id}> {post.id == id ? likeStatus: 'Like' }   {post.id == id ?likes  : post.likes_count } </button>
                     )
                    }
                   
@@ -154,7 +165,4 @@ export default  function Post(){
 
 
      );
-
-        
-      
 }

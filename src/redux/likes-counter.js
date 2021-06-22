@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import axios from 'axios';
-import React, { setState } from 'react';
+import { Component } from 'react';
 
 export const counterSlice = createSlice({
   name: 'counter',
@@ -40,6 +40,8 @@ export const counterSlice = createSlice({
     //   state.count += action.payload
     // },
   },
+
+  
 })
 
 // Action creators are generated for each case reducer function

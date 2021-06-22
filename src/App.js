@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
 import Post from './components/Post'
+import Posts from './components/Posts'
 import CreatePost from './components/CreatePost'
 import EditPost from './components/EditPost'
 import Login from './components/login'
@@ -42,7 +43,7 @@ function App() {
             renders the first one that matches the current URL. */}
         <Switch>
           <Route path="/list">
-            <Post />
+            <Posts />
           </Route>
           <Route path="/create">
             <CreatePost />
